@@ -1,21 +1,18 @@
-// Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
+// src/firebaseConfig.js
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD-sUIhsyUOSPA0RIjb59lL7TOBxTyYuJM",
-  authDomain: "payment-portal-auth.firebaseapp.com",
-  projectId: "payment-portal-auth",
-  storageBucket: "payment-portal-auth.firebasestorage.app",
-  messagingSenderId: "655511061320",
-  appId: "1:655511061320:web:499ee9da8cb9aa41c2a97d",
-  measurementId: "G-V7YHB9E07M"
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_AUTH_DOMAIN",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_STORAGE_BUCKET",
+  messagingSenderId: "YOUR_MSG_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Initialize Firebase Authentication and export it
+export const auth = getAuth(app);
