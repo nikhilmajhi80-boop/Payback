@@ -1,39 +1,91 @@
 import React, { useState, useEffect } from 'react';
+import { auth } from './firebaseConfig';
+import {
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+} from 'firebase/auth';
 
 export default function App() {
+  const [user, setUser] = useState(null);
   const [payments, setPayments] = useState([]);
   const [message, setMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
   useEffect(() => {
-    fetch('/api/payments')
-      .then(res => res.json())
-      .then(data => setPayments(data))
-      .catch(console.error);
+    // Listen to auth state changes
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setError('');
+      if (currentUser) {
+        // Fetch payments only if logged in
+        fetch('/api/payments')
+          .then((res) => res.json())
+          .then((data) => setPayments(data))
+          .catch(console.error);
+      } else {
+        setPayments([]);
+      }
+    });
+    return () => unsubscribe();
   }, []);
 
+  const login = async () => {
+    setError('');
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const signup = async () => {
+    setError('');
+    try {
+      await createUserWithEmailAndPassword(auth, email, password);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const logout = async () => {
+    await signOut(auth);
+  };
+
   const sendMessage = async () => {
+    if (!message) return alert('Please enter a message');
     await fetch('/api/message', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message })
+      body: JSON.stringify({ message }),
     });
     setMessage('');
     alert('Message sent (demo)');
   };
 
-  return (
-    <div style={{ maxWidth: '800px', margin: '32px auto', padding: '1rem' }}>
-      <header style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-        <h1>Payment Portal</h1>
-        <small>Demo build</small>
-      </header>
-
-      <section style={{background:'#fff', padding:12, borderRadius:8, boxShadow:'0 2px 8px rgba(0,0,0,0.04)'}}>
-        <h2>Payments</h2>
-        <ul>
-          {payments.map((p) => (
-            <li key={p.id} style={{padding:'6px 0', borderBottom:'1px solid #f1f5f9'}}>
-              <strong>{p.date}</strong> — {p.location} — {p.work} — ₹{p.total}
+  if (!user) {
+    return (
+      <div style={{ maxWidth: 400, margin: '3rem auto', padding: '1rem', background: '#fff', borderRadius: 8 }}>
+        <h2>Login / Sign Up</h2>
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          style={{ width: '100%', marginBottom: 8, padding: 8 }}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          style={{ width: '100%', marginBottom: 8, padding: 8 }}
+        />
+        <button onClick={login} style={{ marginR
             </li>
           ))}
         </ul>
