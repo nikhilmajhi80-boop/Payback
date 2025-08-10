@@ -1,0 +1,13 @@
+{
+  "users":[
+    {"id":1,"name":"Admin User","email":"admin@example.com","role":"admin"},
+    {"id":2,"name":"Client One","email":"client1@example.com","role":"client"}
+  ],
+  "payments":[
+    {"id":1,"date":"2025-08-01","location":"Mumbai","work":"Delivery A","box":3,"auto_charges":50,"bus_charges":20,"total":70,"grand_total":70,"client_id":2},
+    {"id":2,"date":"2025-08-02","location":"Pune","work":"Delivery B","box":1,"auto_charges":30,"bus_charges":10,"total":40,"grand_total":40,"client_id":2}
+  ],
+  "messages":[
+    {"id":1,"payment_id":1,"sender_id":1,"message":"Please confirm payment","timestamp":"2025-08-02T10:00:00Z"}
+  ]
+}
